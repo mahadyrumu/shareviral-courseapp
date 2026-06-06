@@ -1,20 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import RootNavigator from './src/navigation/RootNavigator';
+import { syncData } from './src/services/sync';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
+  const [isSyncing, setIsSyncing] = useState(true);
+
+  useEffect(() => {
+    // Initial sync on app load
+    const performInitialSync = async () => {
+      try {
+        console.log('Starting initial sync...');
+        await syncData();
+        console.log('Initial sync complete.');
+      } catch (error) {
+        console.log('Initial sync failed (offline expected):', error);
+      } finally {
+        setIsSyncing(false);
+      }
+    };
+    performInitialSync();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
