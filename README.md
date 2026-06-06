@@ -31,8 +31,9 @@ This application successfully implements the following requested bonus features:
 1. **Optimistic Enrollment Updates:** Because WatermelonDB is reactive and offline-first, tapping "Enroll" instantly commits to the local database and immediately updates the UI with zero network latency.
 2. **Environment-Based API Configuration:** `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` are strictly managed via a `.env` file, ensuring no hardcoded secrets exist in the source code.
 3. **APK Submission:** The build pipeline has been successfully executed, and a production-ready `.apk` has been provided alongside the source code.
+4. **Dark Mode:** Integrated a dynamic theme system that respects system preferences and allows for seamless toggling within the app.
 
-*(Note: Other bonus features such as Supabase Auth, Deep Linking, Dark Mode, Skeleton Loading, and CI Workflows were intentionally scoped out. This decision was made to rigorously prioritize a bulletproof offline-first architecture, robust performance optimization, and clean data-layer abstractions within the suggested 6–8 hour timeframe).*
+*(Note: Other bonus features such as Supabase Auth, Deep Linking, Skeleton Loading, and CI Workflows were intentionally scoped out. This decision was made to rigorously prioritize a bulletproof offline-first architecture, robust performance optimization, and clean data-layer abstractions within the suggested 6–8 hour timeframe).*
 
 ## Supabase Setup
 
