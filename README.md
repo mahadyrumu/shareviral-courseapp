@@ -100,4 +100,3 @@ npm test
 
 ## Known Limitations
 - Background Sync requires the app to be open. For full headless background sync, packages like `expo-background-fetch` would need to be added.
-- The app uses Expo Go for quick compilation. To use native WatermelonDB SQLite bindings efficiently in production, a prebuild workflow (`npx expo run:ios`) is recommended.
