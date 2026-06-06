@@ -85,7 +85,7 @@ export default function CourseListScreen() {
       <View style={styles.headerContainer}>
         <TextInput 
           style={styles.searchInput}
-          placeholder="Search courses..."
+          placeholder="Search by title, instructor, or tags..."
           value={searchTerm}
           onChangeText={setSearchTerm}
           clearButtonMode="while-editing"
