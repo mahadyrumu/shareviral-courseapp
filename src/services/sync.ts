@@ -5,6 +5,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LAST_SYNCED_KEY } from '../components/OfflineIndicator';
 
 export async function syncData() {
+  const wiped = await AsyncStorage.getItem('wiped_v3');
+  if (!wiped) {
+    console.log('WIPING LOCAL DATABASE TO CLEAR CACHE...');
+    await database.write(async () => {
+      await database.unsafeResetDatabase();
+    });
+    await AsyncStorage.setItem('wiped_v3', 'true');
+  }
+
   await synchronize({
     database,
     pullChanges: async ({ lastPulledAt, schemaVersion, migration }) => {
