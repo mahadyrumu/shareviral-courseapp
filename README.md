@@ -109,3 +109,8 @@ npm test
 
 ## Known Limitations
 - Background Sync requires the app to be open. For full headless background sync, packages like `expo-background-fetch` would need to be added.
+
+## AI Disclosure
+In compliance with the assessment guidelines, please note that this project was developed using a pair-programming methodology alongside **Antigravity AI** (a Google DeepMind coding assistant). 
+
+The AI was utilized strictly as a collaborative tool (similar to GitHub Copilot or ChatGPT) to bootstrap boilerplate code, generate the initial UI scaffolding, and assist in debugging React Native environment issues. All core architectural decisions (such as selecting WatermelonDB for the offline-first strategy), data schema designs, and logic implementations reflect my own engineering intent and understanding of scalable mobile application development.
