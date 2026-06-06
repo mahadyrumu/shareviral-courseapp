@@ -27,28 +27,42 @@ export async function syncData() {
         return { changes: {}, timestamp: Date.now() };
       }
 
-      const coursesToUpdate = data.map((course: any) => ({
-        id: course.course_id, // WatermelonDB expects 'id' as primary key string
-        course_id: course.course_id,
-        title: course.title,
-        description_short: course.description_short,
-        instructor_id: course.instructor_id,
-        instructor_name: course.instructor_name,
-        instructor_expertise_level: course.instructor_expertise_level,
-        duration_weeks: course.duration_weeks,
-        price_usd: course.price_usd,
-        is_premium: course.is_premium,
-        tags: course.tags,
-        rating: course.rating,
-        last_updated: new Date(course.last_updated).getTime(),
-        // Note: is_enrolled is purposely omitted to prevent overwriting local state
-      }));
+      const existingCourses = await database.get('courses').query().fetch();
+      const existingIds = new Set(existingCourses.map(c => c.id));
+
+      const created: any[] = [];
+      const updated: any[] = [];
+
+      data.forEach((course: any) => {
+        const courseData = {
+          id: course.course_id, // WatermelonDB expects 'id' as primary key string
+          course_id: course.course_id,
+          title: course.title,
+          description_short: course.description_short,
+          instructor_id: course.instructor_id,
+          instructor_name: course.instructor_name,
+          instructor_expertise_level: course.instructor_expertise_level,
+          duration_weeks: course.duration_weeks,
+          price_usd: course.price_usd,
+          is_premium: course.is_premium,
+          tags: course.tags,
+          rating: course.rating,
+          last_updated: new Date(course.last_updated).getTime(),
+          // Note: is_enrolled is purposely omitted to prevent overwriting local state
+        };
+
+        if (existingIds.has(courseData.id)) {
+          updated.push(courseData);
+        } else {
+          created.push(courseData);
+        }
+      });
 
       return {
         changes: {
           courses: {
-            created: [],
-            updated: coursesToUpdate,
+            created,
+            updated,
             deleted: [], // For this assessment, we assume no hard deletes from backend
           },
         },
