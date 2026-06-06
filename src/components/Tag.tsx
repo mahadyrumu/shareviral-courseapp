@@ -15,16 +15,18 @@ export default function Tag({ label }: TagProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#e9ecef',
-    paddingHorizontal: 8,
+    backgroundColor: '#e0f2fe',
+    borderWidth: 1,
+    borderColor: '#bae6fd',
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 16,
-    marginRight: 6,
-    marginBottom: 6,
+    borderRadius: 8,
+    marginRight: 8,
+    marginBottom: 8,
   },
   text: {
     fontSize: 12,
-    color: '#495057',
-    fontWeight: '500',
+    color: '#0369a1',
+    fontWeight: '600',
   },
 });
