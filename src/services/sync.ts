@@ -45,7 +45,7 @@ export async function syncData() {
           duration_weeks: course.duration_weeks,
           price_usd: course.price_usd,
           is_premium: course.is_premium,
-          tags: course.tags,
+          tags: JSON.stringify(course.tags || []),
           rating: course.rating,
           last_updated: new Date(course.last_updated).getTime(),
           // Note: is_enrolled is purposely omitted to prevent overwriting local state
