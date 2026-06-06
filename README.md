@@ -31,23 +31,24 @@ npx expo run:ios
 
 ## Supabase Setup Details
 
-### Environment Configuration
-Do NOT hardcode your API keys. Create a `.env` file in the root directory:
+### Supabase Project Setup Notes
+To run this project, you must create a new Supabase project and database. Once created, you will need to provision the database with our specific table schema and link your project's API keys to the React Native app.
+
+### Public Anon Key Setup through Environment Configuration
+**Do not hardcode secrets directly in source code.** 
+To securely link the app to your Supabase project, create a `.env` file in the root directory of the application:
 ```
 EXPO_PUBLIC_SUPABASE_URL=your_project_url
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-### Row Level Security (RLS) Assumptions
-We assume this table allows anonymous `SELECT` operations for the purpose of the assessment. If RLS is enabled, you must add an explicit policy allowing SELECT for anon roles:
+### Any Assumptions or Row Level Security Policy Details
+**Assumption:** We assume this table allows anonymous `SELECT` operations for the purpose of this assessment. If Row Level Security (RLS) is enabled on your Supabase project, you must add an explicit policy allowing `SELECT` for anonymous roles:
 ```sql
 CREATE POLICY "Enable read access for all users" ON "public"."courses" AS PERMISSIVE FOR SELECT TO public USING (true);
 ```
 
-### Database Seeding (Optional)
-To quickly populate your Supabase database with diverse mock data (different titles, instructors, prices, and tags), you can run the contents of the `seed.sql` file provided in the root directory in your Supabase SQL Editor.
-
-## Table Schema
+### Table Schema
 Run the following SQL in your Supabase SQL Editor to create the required table:
 ```sql
 create table courses (
