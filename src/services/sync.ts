@@ -74,7 +74,6 @@ export async function syncData() {
       // Enrollment state is local-only, so we do not push anything back to Supabase.
       return;
     },
-    sendCreatedAsUpdated: true,
   });
 
   // Save the successful sync time
