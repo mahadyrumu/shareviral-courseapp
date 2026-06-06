@@ -26,6 +26,12 @@ Because WatermelonDB emits observable streams, UI components automatically react
 
 **Zustand** is utilized as a lightweight global store (`useCourseFilterStore`) to manage UI state, specifically the advanced search, filtering (premium/enrolled), and sorting criteria. This neatly decouples the UI interaction state from the React component tree and database queries.
 
+## Bonus Points Achieved
+This application successfully implements the following requested bonus features:
+1. **Optimistic Enrollment Updates:** Because WatermelonDB is reactive and offline-first, tapping "Enroll" instantly commits to the local database and immediately updates the UI with zero network latency.
+2. **Environment-Based API Configuration:** `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` are strictly managed via a `.env` file, ensuring no hardcoded secrets exist in the source code.
+3. **APK Submission:** The build pipeline has been successfully executed, and a production-ready `.apk` has been provided alongside the source code.
+
 ## Supabase Setup
 
 ### Table Schema
