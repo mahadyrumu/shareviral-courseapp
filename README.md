@@ -60,18 +60,35 @@ We assume this table allows anonymous `SELECT` operations for the purpose of the
 CREATE POLICY "Enable read access for all users" ON "public"."courses" AS PERMISSIVE FOR SELECT TO public USING (true);
 ```
 
-## Running the App
+## Running the App Locally
 
-1. Install dependencies:
+### 1. Clone the Repository
+Clone the project to your local machine and navigate into the directory:
+```bash
+git clone https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git
+cd YOUR-REPO-NAME
+```
+
+### 2. Install Dependencies
 ```bash
 npm install
 ```
-2. Start the Expo server:
-```bash
-npm start
-```
-3. Run on a device (press `a` for Android or `i` for iOS).
 
+### 3. Configure Environment Variables
+Create a `.env` file in the root directory and add the Supabase keys as detailed in the "Environment Configuration" section above.
+
+### 4. Build and Run the App
+**Important:** Because this app uses WatermelonDB with custom native SQLite bindings for ultra-fast performance, it **cannot** be run inside the standard "Expo Go" app. You must compile the native Android/iOS project.
+
+**For Android (Requires Android Studio/Emulator or connected physical device):**
+```bash
+npx expo run:android
+```
+
+**For iOS (Requires Mac & Xcode):**
+```bash
+npx expo run:ios
+```
 ## Testing
 The app includes Jest tests verifying our components and Data Repository mock logic. To run the tests:
 ```bash
