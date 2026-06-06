@@ -60,6 +60,9 @@ We assume this table allows anonymous `SELECT` operations for the purpose of the
 CREATE POLICY "Enable read access for all users" ON "public"."courses" AS PERMISSIVE FOR SELECT TO public USING (true);
 ```
 
+### Database Seeding (Optional)
+To quickly populate your Supabase database with diverse mock data (different titles, instructors, prices, and tags), you can run the contents of the `seed.sql` file provided in the root directory in your Supabase SQL Editor.
+
 ## Running the App Locally
 
 ### 1. Clone the Repository
