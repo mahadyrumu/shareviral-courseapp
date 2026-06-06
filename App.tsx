@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './src/navigation/RootNavigator';
 import { syncData } from './src/services/sync';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   const [isSyncing, setIsSyncing] = useState(true);
@@ -25,6 +26,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
+      <StatusBar style="dark" backgroundColor="transparent" translucent={true} />
       <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
