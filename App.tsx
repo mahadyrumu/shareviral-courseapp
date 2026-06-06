@@ -4,6 +4,20 @@ import RootNavigator from './src/navigation/RootNavigator';
 import { syncData } from './src/services/sync';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
+
+function AppContent() {
+  const { isDark } = useTheme();
+  
+  return (
+    <>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </>
+  );
+}
 
 export default function App() {
   const [isSyncing, setIsSyncing] = useState(true);
@@ -26,10 +40,9 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="dark" />
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

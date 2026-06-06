@@ -2,16 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../theme/ThemeContext';
 
 export const LAST_SYNCED_KEY = '@last_synced_time';
 
 export default function OfflineIndicator() {
-  const [isOffline, setIsOffline] = useState(false);
+  const [isConnected, setIsConnected] = useState<boolean | null>(true);
   const [lastSynced, setLastSynced] = useState<string | null>(null);
+  const { colors } = useTheme();
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
-      setIsOffline(state.isConnected === false);
+      setIsConnected(state.isConnected);
     });
 
     const fetchLastSynced = async () => {
@@ -27,7 +29,6 @@ export default function OfflineIndicator() {
     };
 
     fetchLastSynced();
-    // Refresh the sync time every 10 seconds just in case it changes
     const interval = setInterval(fetchLastSynced, 10000);
 
     return () => {
@@ -36,35 +37,41 @@ export default function OfflineIndicator() {
     };
   }, []);
 
-  return (
-    <View style={[styles.container, isOffline ? styles.offlineBg : styles.onlineBg]}>
-      {isOffline && <Text style={styles.textOffline}>You are currently offline.</Text>}
-      {lastSynced && <Text style={isOffline ? styles.textOffline : styles.textOnline}>Last synced: {lastSynced}</Text>}
-    </View>
-  );
+  if (isConnected === false) {
+    return (
+      <View style={[styles.offlineBanner, { backgroundColor: colors.danger }]}>
+        <Text style={[styles.offlineText, { color: colors.dangerText }]}>You are currently offline.</Text>
+      </View>
+    );
+  }
+
+  if (lastSynced) {
+    return (
+      <View style={[styles.syncedBanner, { backgroundColor: colors.surfaceVariant }]}>
+        <Text style={[styles.syncedText, { color: colors.textSecondary }]}>Last synced: {lastSynced}</Text>
+      </View>
+    );
+  }
+
+  return null;
 }
 
 const styles = StyleSheet.create({
-  container: {
+  offlineBanner: {
     padding: 6,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    gap: 8,
   },
-  offlineBg: {
-    backgroundColor: '#dc3545',
+  syncedBanner: {
+    padding: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  onlineBg: {
-    backgroundColor: '#e9ecef',
-  },
-  textOffline: {
-    color: '#fff',
+  offlineText: {
     fontSize: 12,
     fontWeight: '600',
   },
-  textOnline: {
-    color: '#6c757d',
+  syncedText: {
     fontSize: 12,
     fontWeight: '500',
   },

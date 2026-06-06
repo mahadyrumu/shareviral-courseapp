@@ -10,6 +10,7 @@ import { syncData } from '../../services/sync';
 import { RootNavigationProp } from '../../types/navigation';
 import { useNavigation } from '@react-navigation/native';
 import { useCourseFilterStore } from '../../store/useCourseFilterStore';
+import { useTheme } from '../../theme/ThemeContext';
 
 const CourseList = ({ courses }: { courses: Course[] }) => {
   const navigation = useNavigation<RootNavigationProp>();
@@ -34,10 +35,12 @@ const CourseList = ({ courses }: { courses: Course[] }) => {
     />
   ), [navigation]);
 
+  const { colors } = useTheme();
+
   if (courses.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>No courses found.</Text>
+      <View style={[styles.emptyContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No courses found.</Text>
       </View>
     );
   }
@@ -68,6 +71,7 @@ export default function CourseListScreen() {
     filterPremium, setFilterPremium,
     sortBy, setSortBy
   } = useCourseFilterStore();
+  const { colors } = useTheme();
 
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
   
@@ -79,13 +83,14 @@ export default function CourseListScreen() {
   }, [searchTerm]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <OfflineIndicator />
       
-      <View style={styles.headerContainer}>
+      <View style={[styles.headerContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
         <TextInput 
-          style={styles.searchInput}
+          style={[styles.searchInput, { backgroundColor: colors.surfaceVariant, color: colors.text }]}
           placeholder="Search by title, instructor, or tags..."
+          placeholderTextColor={colors.textSecondary}
           value={searchTerm}
           onChangeText={setSearchTerm}
           clearButtonMode="while-editing"
@@ -93,33 +98,33 @@ export default function CourseListScreen() {
         
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
           <TouchableOpacity 
-            style={[styles.filterButton, filterEnrolled && styles.filterActive]} 
+            style={[styles.filterButton, { backgroundColor: filterEnrolled ? colors.primary : colors.surfaceVariant }]} 
             onPress={() => setFilterEnrolled(filterEnrolled ? null : true)}>
-            <Text style={[styles.filterText, filterEnrolled && styles.filterTextActive]}>Enrolled</Text>
+            <Text style={[styles.filterText, { color: filterEnrolled ? colors.primaryText : colors.text }]}>Enrolled</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.filterButton, filterPremium && styles.filterActive]} 
+            style={[styles.filterButton, { backgroundColor: filterPremium ? colors.primary : colors.surfaceVariant }]} 
             onPress={() => setFilterPremium(filterPremium ? null : true)}>
-            <Text style={[styles.filterText, filterPremium && styles.filterTextActive]}>Premium</Text>
+            <Text style={[styles.filterText, { color: filterPremium ? colors.primaryText : colors.text }]}>Premium</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={[styles.sortButton, sortBy === 'rating' && styles.sortButtonActive]} 
+            style={[styles.sortButton, { backgroundColor: sortBy === 'rating' ? colors.success : colors.surface, borderColor: sortBy === 'rating' ? colors.success : colors.border }]} 
             onPress={() => setSortBy(sortBy === 'rating' ? null : 'rating')}>
-            <Text style={[styles.sortText, sortBy === 'rating' && styles.sortTextActive]}>⭐ Rating</Text>
+            <Text style={[styles.sortText, { color: sortBy === 'rating' ? colors.successText : colors.text }]}>⭐ Rating</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.sortButton, sortBy === 'price' && styles.sortButtonActive]} 
+            style={[styles.sortButton, { backgroundColor: sortBy === 'price' ? colors.success : colors.surface, borderColor: sortBy === 'price' ? colors.success : colors.border }]} 
             onPress={() => setSortBy(sortBy === 'price' ? null : 'price')}>
-            <Text style={[styles.sortText, sortBy === 'price' && styles.sortTextActive]}>💵 Price</Text>
+            <Text style={[styles.sortText, { color: sortBy === 'price' ? colors.successText : colors.text }]}>💵 Price</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.sortButton, sortBy === 'duration' && styles.sortButtonActive]} 
+            style={[styles.sortButton, { backgroundColor: sortBy === 'duration' ? colors.success : colors.surface, borderColor: sortBy === 'duration' ? colors.success : colors.border }]} 
             onPress={() => setSortBy(sortBy === 'duration' ? null : 'duration')}>
-            <Text style={[styles.sortText, sortBy === 'duration' && styles.sortTextActive]}>⏱ Duration</Text>
+            <Text style={[styles.sortText, { color: sortBy === 'duration' ? colors.successText : colors.text }]}>⏱ Duration</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -137,16 +142,12 @@ export default function CourseListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
   },
   headerContainer: {
     padding: 16,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#dee2e6',
   },
   searchInput: {
-    backgroundColor: '#f1f3f5',
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 8,
@@ -160,38 +161,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#e9ecef',
     marginRight: 8,
   },
-  filterActive: {
-    backgroundColor: '#0d6efd',
-  },
   filterText: {
-    color: '#495057',
     fontWeight: '600',
-  },
-  filterTextActive: {
-    color: '#fff',
   },
   sortButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#ced4da',
     marginRight: 8,
   },
-  sortButtonActive: {
-    backgroundColor: '#198754',
-    borderColor: '#198754',
-  },
   sortText: {
-    color: '#212529',
     fontWeight: '600',
-  },
-  sortTextActive: {
-    color: '#fff',
   },
   emptyContainer: {
     flex: 1,
@@ -200,6 +183,5 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: '#6c757d',
   },
 });

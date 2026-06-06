@@ -1,13 +1,16 @@
-import React, { useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import withObservables from '@nozbe/with-observables';
 import { CourseRepository } from '../../data/CourseRepository';
 import Course from '../../data/Course';
 import Tag from '../../components/Tag';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { CourseDetailRouteProp, RootNavigationProp } from '../../types/navigation';
+import { useTheme } from '../../theme/ThemeContext';
+import { useRoute } from '@react-navigation/native';
+import { CourseDetailRouteProp } from '../../types/navigation';
 
 const CourseDetail = ({ course }: { course: Course }) => {
+  const { colors } = useTheme();
+  
   const handleEnrollToggle = async () => {
     try {
       await CourseRepository.toggleEnrollment(course.id);
@@ -16,14 +19,24 @@ const CourseDetail = ({ course }: { course: Course }) => {
     }
   };
 
+  if (!course) {
+    return (
+      <View style={[styles.centerContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>{course.title}</Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+      <Text style={[styles.title, { color: colors.text }]}>{course.title}</Text>
       
       <View style={styles.metaContainer}>
-        <Text style={styles.metaText}>⭐ {course.rating.toFixed(1)}</Text>
-        <Text style={styles.metaText}>⏱ {course.duration_weeks} weeks</Text>
-        <Text style={styles.metaText}>💵 {course.is_premium ? `$${course.price_usd}` : 'Free'}</Text>
+        <Text style={[styles.metaText, { color: colors.textSecondary }]}>⭐ {course.rating.toFixed(1)}</Text>
+        <Text style={[styles.metaText, { color: colors.textSecondary }]}>⏱ {course.duration_weeks} weeks</Text>
+        <Text style={[styles.metaText, { color: course.is_premium ? colors.primary : colors.success }]}>
+          {course.is_premium ? `$${course.price_usd}` : 'Free'}
+        </Text>
       </View>
 
       <View style={styles.tagContainer}>
@@ -32,21 +45,21 @@ const CourseDetail = ({ course }: { course: Course }) => {
         ))}
       </View>
 
-      <View style={styles.instructorContainer}>
-        <Text style={styles.instructorTitle}>Instructor</Text>
-        <Text style={styles.instructorName}>{course.instructor_name}</Text>
+      <View style={[styles.instructorContainer, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.instructorTitle, { color: colors.textSecondary }]}>Instructor</Text>
+        <Text style={[styles.instructorName, { color: colors.text }]}>{course.instructor_name}</Text>
         {course.instructor_expertise_level && (
-          <Text style={styles.instructorExp}>{course.instructor_expertise_level}</Text>
+          <Text style={[styles.instructorExp, { color: colors.textSecondary }]}>{course.instructor_expertise_level}</Text>
         )}
       </View>
 
       <View style={styles.descriptionContainer}>
-        <Text style={styles.sectionTitle}>About this course</Text>
-        <Text style={styles.description}>{course.description_short}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>About this course</Text>
+        <Text style={[styles.description, { color: colors.textSecondary }]}>{course.description_short}</Text>
       </View>
 
       <TouchableOpacity 
-        style={[styles.button, course.is_enrolled ? styles.buttonUnenroll : styles.buttonEnroll]} 
+        style={[styles.button, { backgroundColor: course.is_enrolled ? colors.danger : colors.primary }]} 
         onPress={handleEnrollToggle}
         activeOpacity={0.8}
       >
@@ -58,21 +71,23 @@ const CourseDetail = ({ course }: { course: Course }) => {
   );
 };
 
-// HOC for observables
 const EnhancedCourseDetail = withObservables(['courseId'], ({ courseId }: { courseId: string }) => ({
   course: CourseRepository.observeCourse(courseId)
 }))(CourseDetail);
 
 export default function CourseDetailScreen() {
   const route = useRoute<CourseDetailRouteProp>();
-  
   return <EnhancedCourseDetail courseId={route.params.courseId} />;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     padding: 20,
@@ -81,7 +96,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#212529',
     marginBottom: 12,
   },
   metaContainer: {
@@ -91,7 +105,6 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 15,
-    color: '#495057',
     fontWeight: '500',
   },
   tagContainer: {
@@ -100,7 +113,6 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   instructorContainer: {
-    backgroundColor: '#f8f9fa',
     padding: 16,
     borderRadius: 12,
     marginBottom: 24,
@@ -108,18 +120,15 @@ const styles = StyleSheet.create({
   instructorTitle: {
     fontSize: 12,
     textTransform: 'uppercase',
-    color: '#6c757d',
     fontWeight: 'bold',
     marginBottom: 4,
   },
   instructorName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#212529',
   },
   instructorExp: {
     fontSize: 14,
-    color: '#495057',
     marginTop: 2,
   },
   descriptionContainer: {
@@ -128,24 +137,16 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#212529',
     marginBottom: 8,
   },
   description: {
     fontSize: 16,
-    color: '#495057',
     lineHeight: 24,
   },
   button: {
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
-  },
-  buttonEnroll: {
-    backgroundColor: '#0d6efd',
-  },
-  buttonUnenroll: {
-    backgroundColor: '#dc3545',
   },
   buttonText: {
     color: '#fff',

@@ -1,14 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../theme/ThemeContext';
 
 interface TagProps {
   label: string;
 }
 
 export default function Tag({ label }: TagProps) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>{label}</Text>
+    <View style={[styles.container, { backgroundColor: colors.tagBackground, borderColor: colors.tagBorder }]}>
+      <Text style={[styles.text, { color: colors.tagText }]}>{label}</Text>
     </View>
   );
 }
